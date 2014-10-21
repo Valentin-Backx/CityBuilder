@@ -6,6 +6,8 @@ var Client = IgeClass.extend({
 		// Load our textures
 		var self = this;
 		this.gameTextures = {};
+
+		this.gameTextures.roadTiles = new IgeTexture('./assets/roadTiles/exitE.png')
 		
 		// Load a game texture here
 		//this.gameTextures.myTexture = new IgeTexture('./assets/somePathToImage.png');
@@ -32,8 +34,19 @@ var Client = IgeClass.extend({
 				if (success) {
 					// Add base scene data
 					ige.addGraph('IgeBaseScene');
-					
+
 					// CREATE SOME ENTITIES AND WHOTNOT HERE
+
+					self.objectLayer = new IgeScene2d()
+						.id('objectLayer')
+						.isometricMounts(true)
+						.mount(ige.$('baseScene'));
+
+					self.tileMap = new TileMap()
+						.id('tileMap')
+						.mount(self.objectLayer);
+
+					self.cameraControls = new CameraControls();
 				}
 			});
 		});

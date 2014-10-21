@@ -5,7 +5,9 @@ var igeClientConfig = {
 		
 		/* Standard game scripts */
 		'./client.js',
-		'./index.js'
+		'./index.js',
+		'./gameClasses/TileMap.js',
+		'./gameClasses/CameraControls.js'
 	]
 };
 
