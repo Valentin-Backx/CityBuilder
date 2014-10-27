@@ -7,8 +7,47 @@ var Client = IgeClass.extend({
 		var self = this;
 		this.gameTextures = {};
 
-		this.gameTextures.roadTiles = new IgeTexture('./assets/roadTiles/exitE.png')
-		
+		var defaultRoad = new IgeTexture('./assets/roadTiles/roadEW.png');
+
+		this.gameTextures.roadTiles = 
+		{
+			0 : defaultRoad,
+			170 : new IgeTexture('./assets/roadTiles/crossroad.png'),
+			42 : new IgeTexture('./assets/roadTiles/crossroadESW.png'),
+			138 : new IgeTexture('./assets/roadTiles/crossroadNES.png'),
+			162 : new IgeTexture('./assets/roadTiles/crossroadNEW.png'),
+			168 : new IgeTexture('./assets/roadTiles/crossroadNSW.png'),
+			2 : new IgeTexture('./assets/roadTiles/endE.png'),
+			128 : new IgeTexture('./assets/roadTiles/endN.png'),
+			8 : new IgeTexture('./assets/roadTiles/endS.png'),
+			32 : new IgeTexture('./assets/roadTiles/endW.png'),
+			250 : new IgeTexture('./assets/roadTiles/exitE.png'),
+			190 : new IgeTexture('./assets/roadTiles/exitN.png'),
+			235 : new IgeTexture('./assets/roadTiles/exitS.png'),
+			175 : new IgeTexture('./assets/roadTiles/exitW.png'),
+			248 : new IgeTexture('./assets/roadTiles/lotE.png'),
+			224 : new IgeTexture('./assets/roadTiles/lotES.png'),
+			62 : new IgeTexture('./assets/roadTiles/lotN.png'),
+			56 : new IgeTexture('./assets/roadTiles/lotNE.png'),
+			14 : new IgeTexture('./assets/roadTiles/lotNW.png'),
+			227 : new IgeTexture('./assets/roadTiles/lotS.png'),
+			131 : new IgeTexture('./assets/roadTiles/lotSW.png'),
+			143 : new IgeTexture('./assets/roadTiles/lotW.png'),
+			255 : new IgeTexture('./assets/roadTiles/road.png'),
+			10 : new IgeTexture('./assets/roadTiles/roadES.png'),
+			34 : defaultRoad,
+			130 : new IgeTexture('./assets/roadTiles/roadNE.png'),
+			136 : new IgeTexture('./assets/roadTiles/roadNS.png'),
+			160 : new IgeTexture('./assets/roadTiles/roadNW.png'),
+			40 : new IgeTexture('./assets/roadTiles/roadSW.png'),
+			
+		}
+		this.gameTextures.outside  = new IgeCellSheet('./assets/iso-64x64-outside.png',10,14);
+
+		this.gameTextures.grass = new IgeCellSheet('./assets/grassSheet.png',4,1);
+
+		this.gameTextures.grassTile = new IgeCellSheet('./assets/grassTile.png',1,1);
+
 		// Load a game texture here
 		//this.gameTextures.myTexture = new IgeTexture('./assets/somePathToImage.png');
 		
@@ -35,6 +74,8 @@ var Client = IgeClass.extend({
 					// Add base scene data
 					ige.addGraph('IgeBaseScene');
 
+					// ige.$('vp1').drawBounds(true);
+
 					// CREATE SOME ENTITIES AND WHOTNOT HERE
 
 					self.objectLayer = new IgeScene2d()
@@ -42,11 +83,25 @@ var Client = IgeClass.extend({
 						.isometricMounts(true)
 						.mount(ige.$('baseScene'));
 
+					// console.log(TileMap);
 					self.tileMap = new TileMap()
 						.id('tileMap')
 						.mount(self.objectLayer);
+						// .highlightOccupied(true);
+						// .drawBounds(false);
+
+					self.tileMap.addTexture(self.gameTextures.grassTile);
+
+					// self.tileMap.paintBackground();
 
 					self.cameraControls = new CameraControls();
+					self.roadTool = new RoadTool();
+					self.roadTool.init().active = true;
+					self.currentTool = self.roadTool;
+
+					self.eventDispatcher = new EventDispatcher(self.tileMap);
+
+					self.roadNetwork = new RoadNetwork();
 				}
 			});
 		});

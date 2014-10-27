@@ -7,7 +7,11 @@ var igeClientConfig = {
 		'./client.js',
 		'./index.js',
 		'./gameClasses/TileMap.js',
-		'./gameClasses/CameraControls.js'
+		'./gameClasses/CameraControls.js',
+		'./gameClasses/RoadsTool.js',
+		'./gameClasses/EventDispatcher.js',
+		'./gameClasses/RoadPatch.js',
+		'./gameClasses/RoadNetwork.js'
 	]
 };
 
