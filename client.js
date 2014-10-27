@@ -73,15 +73,17 @@ var Client = IgeClass.extend({
 				if (success) {
 					// Add base scene data
 					ige.addGraph('IgeBaseScene');
-
-					// ige.$('vp1').drawBounds(true);
+					// ige.viewportDepth(true);
+					// ige.$('vp1').depth(0);
 
 					// CREATE SOME ENTITIES AND WHOTNOT HERE
+					var baseScene = ige.$('baseScene');
 
 					self.objectLayer = new IgeScene2d()
 						.id('objectLayer')
 						.isometricMounts(true)
-						.mount(ige.$('baseScene'));
+						.mount(baseScene)
+						.depth(0);
 
 					// console.log(TileMap);
 					self.tileMap = new TileMap()
@@ -102,6 +104,34 @@ var Client = IgeClass.extend({
 					self.eventDispatcher = new EventDispatcher(self.tileMap);
 
 					self.roadNetwork = new RoadNetwork();
+					
+					/*=================== UI STUFF =======================*/
+
+					ige.ui.style( '.toolsSelection' ,{
+						'bottom' 			: '5%',
+						'width'  			: '90%',
+						'borderRadius' 		: 5,
+						'height' 			: '20%',
+						'backgroundColor' 	: '#44AA11',
+						'borderColor' 		: '#44AA11',
+						'borderWidth' 		: 4
+					});
+
+					var uiScene = new IgeScene2d()
+						.id('uiScene')
+						.ignoreCamera(true)
+						.mount(baseScene)
+						.depth(10)
+						.opacity(0.5);
+
+					// self.uiViewPort = new IgeViewport()
+					// 	.depth(10)
+					// 	.scene(uiScene);
+
+					// self.uiViewPort.mount(ige);
+
+					self.toolsSelectionUI = new ToolsSelectionUI()
+						.mount(uiScene);
 				}
 			});
 		});

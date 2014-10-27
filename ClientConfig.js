@@ -11,7 +11,8 @@ var igeClientConfig = {
 		'./gameClasses/RoadsTool.js',
 		'./gameClasses/EventDispatcher.js',
 		'./gameClasses/RoadPatch.js',
-		'./gameClasses/RoadNetwork.js'
+		'./gameClasses/RoadNetwork.js',
+		'./gameClasses/ToolsSelectionUI.js'
 	]
 };
 

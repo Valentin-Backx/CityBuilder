@@ -1,5 +1,6 @@
 var TileMap = IgeTextureMap.extend({
 	classId : 'TileMap',
+
 	init : function(){
 		IgeTextureMap.prototype.init.call(this);
 
