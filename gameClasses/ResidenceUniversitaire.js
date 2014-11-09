@@ -5,6 +5,7 @@ var ResidenceUniversitaire = Building.extend({
 	
 	occupation : 0,
 	capacity : 100,
+	currentAttractivity : 1, //maximum
 
 	init : function()
 	{
@@ -52,8 +53,46 @@ var ResidenceUniversitaire = Building.extend({
 		Building.prototype.update.call(this);
 	},
 
+
 	newDayCallback : function(newDay)
 	{
-		console.log(newDay);
+		this.currentAttractivity = this.calculateAttractivity();
+		this.manageImmigration();
+	},
+
+	calculateAttractivity : function()
+	{
+		var foodSatisfaction = this.calculateFoodSatisfaction();
+		var drinkingSatisfaction = this.calculateDrinkingSatisf();
+		var studySatisfaction = this.calculateStudySatisf();
+
+	},
+
+	calculateDrinkingSatisf : function()
+	{
+		
+	},
+
+	calculateFoodSatisfaction : function()
+	{
+
+	},
+
+	calculateStudySatisf : function()
+	{
+
+	},
+
+	manageImmigration : function()
+	{
+		if(this.currentAttractivity * this.capacity > this.occupation&&this.capacity>this.occupation)
+		{
+			this.immigrateStudents();
+		}
+	},
+
+	immigrateStudents : function()
+	{
+		this.occupation++;
 	}
 });

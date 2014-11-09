@@ -11,6 +11,14 @@ var Building = IgeEntity.extend({
 			.isometricMounts(true)
 			.drawBounds(true)
 			.size3d(ige.client.tileMap._tileWidth * this.size.w,ige.client.tileMap._tileHeight * this.size.h,20);
+
+		var self = this;
+		EB.subscribe('NEW_ROAD',function()
+		{
+			this.roadEntry = this.touchingRoad();
+
+			console.log(this.roadEntry);
+		},self);
 	},
 	
 	size : {
@@ -22,7 +30,9 @@ var Building = IgeEntity.extend({
 
 	place : function(tileX,tileY)
 	{
+		this.roadEntry = this.touchingRoad();
 
+		return this;
 	},
 
 	sizeToTiles : function()
@@ -32,7 +42,10 @@ var Building = IgeEntity.extend({
 		return this;
 	},
 
-
+	touchingRoad : function()
+	{
+		return ige.client.roadNetwork.hasContactWithRect(this._occupiedRect);
+	},
 
 	update : function()
 	{

@@ -44,7 +44,9 @@ var RoadNetwork = IgeEntity.extend({
 					}
 				};
 			}
-		};	
+		};
+
+		EB.broadcast('NEW_ROAD');	
 	},
 
 	logRoutes : function()
@@ -214,5 +216,31 @@ var RoadNetwork = IgeEntity.extend({
 		}
 
 		return res;
+	},
+
+	hasContactWithRect : function(rect)
+	{
+		for (var i = rect.x; i < rect.x + rect.width; i++) {
+
+			if(
+				this.isRoadAt(
+					{
+						'x':i,
+						'y:':rect.y - 1
+					}
+				)
+			) return this.roads[rect.y - 1][i];
+			if(this.isRoadAt({'x':i,'y':rect.y + rect.height})) return this.roads[rect.y + rect.height][i];
+			
+		};
+
+		for (var j = rect.y; j <rect.y + rect.height; j++) {
+			
+			if(this.isRoadAt({'x':rect.x - 1,'y':j})) return this.roads[j][rect.x - 1];
+			if(this.isRoadAt({'x':rect.x + rect.width,'y':j})) return this.roads[j][rect.x + rect.width]	
+		};
+
+		return false;
+
 	}
 });

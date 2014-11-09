@@ -8,7 +8,8 @@ var EventBroker = function()
 {
 	this.events = 
 	{
-		'NEXT_DAY' : []
+		'NEXT_DAY' : [],
+		'NEW_ROAD' : []
 	}
 }
 

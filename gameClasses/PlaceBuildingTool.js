@@ -19,7 +19,8 @@ PlaceBuildingTool.prototype.clicCall = function(tileX,tileY,event) {
 			.translateToTile(tileX,tileY)
 			.translateBy(this.currentBuilding.size.offsetX,this.currentBuilding.size.offsetY,0)
 			.occupyTile(tileX,tileY,this.currentBuilding.size.w,this.currentBuilding.size.h)
-			.draw();
+			.draw()
+			.place();
 
 	}else
 	{
