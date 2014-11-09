@@ -13,10 +13,12 @@ var TileMap = IgeTextureMap.extend({
 			.tileWidth(40)
 			.tileHeight(40)
 			.highlightOccupied(true);
-	}
+	},
+
+	size : {w:60,h:60}
 });
 
-TileMap.prototype.paintBackground = function(){
+TileMap.prototype.paintBackground = function() {
 	for (var i =  63 ; i >= 0; i--) {
 		for (var j = 63; j >= 0; j--) {
 			this.paintTile(i,j,0,1);

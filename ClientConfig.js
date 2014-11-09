@@ -12,7 +12,16 @@ var igeClientConfig = {
 		'./gameClasses/EventDispatcher.js',
 		'./gameClasses/RoadPatch.js',
 		'./gameClasses/RoadNetwork.js',
-		'./gameClasses/ToolsSelectionUI.js'
+		'./gameClasses/ToolsSelectionUI.js',
+		'./gameClasses/Environnment.js',
+		'./gameClasses/PlaceBuildingTool.js',
+		'./gameClasses/Building.js',
+		'./gameClasses/Burgers.js',
+		'./gameClasses/Tools.js',
+		'./gameClasses/CheckOccupation.js',
+		'./gameClasses/GameManager.js',
+		'./gameClasses/ResidenceUniversitaire.js',
+		'./gameClasses/EventBroker.js'
 	]
 };
 

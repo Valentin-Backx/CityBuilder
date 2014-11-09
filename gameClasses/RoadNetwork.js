@@ -6,6 +6,7 @@ var RoadNetwork = IgeEntity.extend({
 	},
 
 	roads : [],
+
 	addRoute : function(pathElement)
 	{
 		if(!this.roads[pathElement.y])
@@ -18,15 +19,15 @@ var RoadNetwork = IgeEntity.extend({
 				.mount(ige.client.tileMap)
 				.tileWidth(1)
 				.tileHeight(1)
-				.translateToTile(pathElement.x,pathElement.y,0);
-			}
-
-		// newRP.applyTexture(this.getTexture({'x' : pathElement.x, 'y' : pathElement.y}));
+				.translateToTile(pathElement.x,pathElement.y,0)
+				.occupyTile(pathElement.x,pathElement.y);
+		}
 	},
 
 	updateNetwork : function()
 	{
-		for (var i = this.roads.length - 1; i >= 0; i--) {
+		for (var i = this.roads.length - 1; i >= 0; i--) 
+		{
 			if(this.roads[i])
 			{
 				for (var j = this.roads[i].length - 1; j >= 0; j--) {
@@ -43,9 +44,7 @@ var RoadNetwork = IgeEntity.extend({
 					}
 				};
 			}
-		};
-
-		
+		};	
 	},
 
 	logRoutes : function()
@@ -63,11 +62,6 @@ var RoadNetwork = IgeEntity.extend({
 		var scores = this.getMatchesScores(weight);
 
 		var currentCandidate = scores[0];
-
-		if(tileCoords.x == 0 && tileCoords.y == 1)
-		{
-			console.log(scores);
-		}
 
 		while(!this.hasMatchingRoadTiles(tileCoords,currentCandidate.texture))
 		{

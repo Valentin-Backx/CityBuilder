@@ -19,10 +19,6 @@ var RoadPatch = IgeEntity.extend({
 			.isometric(true)
 			.size3d(ige.client.tileMap._tileWidth,ige.client.tileMap._tileHeight,20)
 			.drawBounds(true)
-
-		
-		// console.log(ige.client.gameTextures.roadTiles._sizeX / tileRatio,ige.client.gameTextures.roadTiles._sizeY / tileRatio,5);
-		// console.log(ige.client.gameTextures.roadTiles._sizeX * tileHorizontalRatio);
 	}
 
 });

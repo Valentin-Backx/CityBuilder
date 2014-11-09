@@ -12,12 +12,6 @@ var RoadTool = function()
 	this.pathFinder = new IgePathFinder();
 }
 
-RoadTool.prototype.init = function() {
-
-	var self = this;
-
-	return this;
-};
 
 RoadTool.prototype.clicCall = function(tileX,tileY,event) {
 
@@ -31,6 +25,7 @@ RoadTool.prototype.clicCall = function(tileX,tileY,event) {
 			this.clearPath();
 			this.drawing = false;
 			ige.client.roadNetwork.updateNetwork();
+			this.clearTilesDrawing();
 			// this.active = false; //a virer (debug)
 		}else{
 			this.startTile = ige.client.tileMap.mouseToTile();
@@ -41,14 +36,16 @@ RoadTool.prototype.clicCall = function(tileX,tileY,event) {
 };
 
 RoadTool.prototype.moveEvent = function(tileX,tileY,event) {
-
-
 	if(!this.drawing) return;
+
+
 	this.updatePath(event);	
 };
 
 RoadTool.prototype.activate = function(bool) {
 	this.active = bool;
+	this.drawing = false;
+	return this;
 };
 
 
@@ -70,16 +67,20 @@ RoadTool.prototype.updatePath = function(event) {
 		this.validRoadTile
 	);
 
+	this.clearTilesDrawing();
+
 	for (var i = this.currentPath.length - 1; i >= 0; i--) {
-		// console.log(this.currentPath[i]);
-		ige.client.tileMap.occupyTile( 
-			this.currentPath[i].x,
-			this.currentPath[i].y,
-			1,
-			1,
-			new IgeEntity()
+		
+		this.tilesDrawing.push(
+			getBuildingPlaceHolder(this.currentPath[i].x,this.currentPath[i].y)
 		);
 	};
+};
+
+RoadTool.prototype.clearTilesDrawing = function(){
+	for (var i = this.tilesDrawing.length - 1; i >= 0; i--) {
+		this.tilesDrawing[i].destroy();
+	};	
 };
 
 RoadTool.prototype.placeRoad = function() {
@@ -101,5 +102,10 @@ RoadTool.prototype.clearPath = function() {
 };
 
 RoadTool.prototype.validRoadTile = function(tile) {
-	return true;
+	if(tile != null)
+	{
+		return tile.classId == "RoadPatch";
+	}else{
+		return true;	
+	}
 };

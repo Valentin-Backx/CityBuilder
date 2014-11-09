@@ -40,13 +40,23 @@ var Client = IgeClass.extend({
 			136 : new IgeTexture('./assets/roadTiles/roadNS.png'),
 			160 : new IgeTexture('./assets/roadTiles/roadNW.png'),
 			40 : new IgeTexture('./assets/roadTiles/roadSW.png'),
-			
 		}
+
 		this.gameTextures.outside  = new IgeCellSheet('./assets/iso-64x64-outside.png',10,14);
 
-		this.gameTextures.grass = new IgeCellSheet('./assets/grassSheet.png',4,1);
+		this.gameTextures.highlightTile = new IgeTexture('./assets/highlightTile.png');
 
-		this.gameTextures.grassTile = new IgeCellSheet('./assets/grassTile.png',1,1);
+		// this.gameTextures.grass = new IgeCellSheet('./assets/grassSheet.png',4,1);
+
+		// this.gameTextures.grassTile = new IgeTexture('./assets/roadTiles/grass.png');
+
+		this.gameTextures.grassTile = new IgeTexture('./assets/grassTile.png');
+
+		this.gameTextures.buildings = 
+		{
+			'burgers' : new IgeTexture('./assets/buildings/burgerShop1.png'),
+			'residence_1' : new IgeTexture('./assets/buildings/residence_universitaire1.png')
+		}
 
 		// Load a game texture here
 		//this.gameTextures.myTexture = new IgeTexture('./assets/somePathToImage.png');
@@ -79,11 +89,20 @@ var Client = IgeClass.extend({
 					// CREATE SOME ENTITIES AND WHOTNOT HERE
 					var baseScene = ige.$('baseScene');
 
+					self.gameTextures.grassTile.resize(40, 20);
+					self.backgroundScene = new IgeScene2d()
+						.id('backgroundScene')
+						.depth(0)
+						.backgroundPattern(self.gameTextures.grassTile, 'repeat', true, true)
+						.ignoreCamera(true) // We want the scene to remain static
+						.mount(baseScene);
+
+
 					self.objectLayer = new IgeScene2d()
 						.id('objectLayer')
 						.isometricMounts(true)
 						.mount(baseScene)
-						.depth(0);
+						.depth(1);
 
 					// console.log(TileMap);
 					self.tileMap = new TileMap()
@@ -96,26 +115,88 @@ var Client = IgeClass.extend({
 
 					// self.tileMap.paintBackground();
 
+					//INITIALIZE EVENT BROKER
+					InitEventBroker();
+
 					self.cameraControls = new CameraControls();
-					self.roadTool = new RoadTool();
-					self.roadTool.init().active = true;
-					self.currentTool = self.roadTool;
+
 
 					self.eventDispatcher = new EventDispatcher(self.tileMap);
 
 					self.roadNetwork = new RoadNetwork();
 					
 					/*=================== UI STUFF =======================*/
+					//HUD
 
-					ige.ui.style( '.toolsSelection' ,{
-						'bottom' 			: '5%',
-						'width'  			: '90%',
+					ige.ui.style('#topHud',{
+						'top'				: 10,
+						'width'				: '90%',
+						// 'left'				: 5,
+						'height'			: '10%',
+						'backgroundColor'	: '#445599',
+						'borderWidth'		: 4,
+						'borderRadius'		: 5,
+						'borderColor'		: '#AA4411'
+					})
+
+					ige.ui.style('#timeDisplayUI',{
+						'top'				: '2%',
+						'width'				: 300,
+						'height'			:  75,
+						'left'				:  15,
+						'font'				: '30px Open Sans',
+						'color'				: '#000000',
+						// 'backgroundColor'	: '#eeeeee',
+					});
+
+
+					//TOOLS
+					ige.ui.style( '.toolsSelection' ,{ //for now it is just 'road tool selection'
+						'bottom' 			: '2%',
+						'width'  			: '95%',
 						'borderRadius' 		: 5,
 						'height' 			: '20%',
-						'backgroundColor' 	: '#44AA11',
-						'borderColor' 		: '#44AA11',
+						'backgroundColor' 	: '#445599',
+						'borderColor' 		: '#445599',
 						'borderWidth' 		: 4
 					});
+
+					ige.ui.style('.tool',{
+						'margin'			: 5,
+						'width'				: 100,
+						'height'			: 100,
+						'borderRadius'		: 5,
+						'borderColor'		: '#AA4411',
+						'backgroundColor'	: '#AA4411'
+					});
+
+
+					ige.ui.style('.tool:hover',{
+						'backgroundColor'	: '#881100'
+					});
+
+
+					//ROAD TOOL
+					ige.ui.style('.roadTool',{
+						'top'				: 15,
+						'left'				: 15
+					});
+
+
+
+					//BUILDING TOOLS
+					ige.ui.style('.building',{ //for now just 'burger tool selection'
+						'top'				: 15,
+						'left'				: 130 	
+					});
+
+					ige.ui.style('.residence_tool',{
+						'top'				: 15,
+						'left'				: 245
+					});
+
+					ige.ui.style('')
+
 
 					var uiScene = new IgeScene2d()
 						.id('uiScene')
@@ -132,6 +213,83 @@ var Client = IgeClass.extend({
 
 					self.toolsSelectionUI = new ToolsSelectionUI()
 						.mount(uiScene);
+
+
+					self.tools = 
+					{
+						'roadTool' : new RoadTool(),
+						'placeBuildingTool' : new PlaceBuildingTool()
+					};
+
+					self.currentTool = self.tools.roadTool.activate(true);
+
+					self.roadToolUi = new IgeUiElement()
+										.id('roadToolUI')
+										.styleClass('roadTool')
+										.styleClass('tool')
+										.mount(self.toolsSelectionUI)
+										.backgroundPattern(self.gameTextures.roadTiles[0],'no-repeat',false,false)
+										.mouseUp(function(event,control)
+											{
+												control.stopPropagation();
+												ige.input.stopPropagation();
+												self.toggleTool(self.tools.roadTool);
+											});
+
+					self.burgerToolUI = new IgeUiElement()
+										.id('burgerToolUI')
+										.styleClass('building')
+										.styleClass('tool')
+										.mount(self.toolsSelectionUI)
+										.backgroundPattern(self.gameTextures.buildings.burgers,'no-repeat',false,false)
+										.mouseUp(function(event,control)
+										{
+											control.stopPropagation();
+											ige.input.stopPropagation();
+											self.currentBuilding = 'burger';
+											self.toggleTool(self.tools.placeBuildingTool);
+										});
+
+					self.residenceToolUI = new IgeUiElement()
+										.id('residenceToolUI')
+										.styleClass('residence_tool')
+										.styleClass('tool')
+										.mount(self.toolsSelectionUI)
+										.backgroundPattern(self.gameTextures.buildings.residence_1,'no-repeat',false,false)
+										.mouseUp(function(event,control)
+										{
+											control.stopPropagation();
+											ige.input.stopPropagation();
+											self.currentBuilding = 'residence';
+											self.toggleTool(self.tools.placeBuildingTool);
+										});
+
+					self.topHud = new IgeUiElement()
+										.id('topHud')
+										.mount(uiScene);
+
+					self.timeDisplay = new IgeUiLabel()
+										.id('timeDisplayUI')
+										// .value("MONDAY")
+										.mount(self.topHud)
+										.depth(15);
+
+
+					self.toggleTool = function(newTool)
+					{
+						if(self.currentTool==newTool)
+						{
+							self.currentTool.activate(false);
+							self.currentTool = null;
+						}else{
+							self.currentTool = newTool.activate(true);
+						}
+					}
+
+					self.environnment = new Environnment();
+
+					self.gameManager = new GameManager()
+						.mount(baseScene);
 				}
 			});
 		});
