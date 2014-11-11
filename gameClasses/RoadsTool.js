@@ -22,17 +22,16 @@ RoadTool.prototype.clicCall = function(tileX,tileY,event) {
 		if(this.drawing)
 		{
 			this.placeRoad();
-			this.clearPath();
 			this.drawing = false;
 			ige.client.roadNetwork.updateNetwork();
 			this.clearTilesDrawing();
 			// this.active = false; //a virer (debug)
-		}else{
+		}else if(!ige.client.tileMap.isTileOccupied(tileX,tileY)){
 			this.startTile = ige.client.tileMap.mouseToTile();
 			this.startPoint = ige.client.tileMap.mouseToTile();
 			this.drawing = true;
-		}
-	}
+		};
+	};
 };
 
 RoadTool.prototype.moveEvent = function(tileX,tileY,event) {
@@ -43,6 +42,12 @@ RoadTool.prototype.moveEvent = function(tileX,tileY,event) {
 };
 
 RoadTool.prototype.activate = function(bool) {
+	if(bool)
+		ige.client.roadToolUi.styleClass('activeTool');
+	else
+	{
+		ige.client.roadToolUi.styleClass('inActiveTool');
+	}
 	this.active = bool;
 	this.drawing = false;
 	return this;
@@ -59,6 +64,7 @@ RoadTool.prototype.updatePath = function(event) {
 	}
 
 	// console.log(this.pathFinder);
+
 
 	this.currentPath = this.pathFinder.aStar(
 		ige.client.tileMap,

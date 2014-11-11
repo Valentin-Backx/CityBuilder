@@ -7,6 +7,7 @@ var igeClientConfig = {
 		'./client.js',
 		'./index.js',
 		'./gameClasses/TileMap.js',
+		'./gameClasses/EventBroker.js',
 		'./gameClasses/CameraControls.js',
 		'./gameClasses/RoadsTool.js',
 		'./gameClasses/EventDispatcher.js',
@@ -20,8 +21,7 @@ var igeClientConfig = {
 		'./gameClasses/Tools.js',
 		'./gameClasses/CheckOccupation.js',
 		'./gameClasses/GameManager.js',
-		'./gameClasses/ResidenceUniversitaire.js',
-		'./gameClasses/EventBroker.js'
+		'./gameClasses/ResidenceUniversitaire.js'
 	]
 };
 

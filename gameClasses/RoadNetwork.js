@@ -3,6 +3,7 @@ var RoadNetwork = IgeEntity.extend({
 	init : function()
 	{
 		IgeEntity.prototype.init.call(this);
+		this.pathFinder = new IgePathFinder();
 	},
 
 	roads : [],
@@ -20,7 +21,8 @@ var RoadNetwork = IgeEntity.extend({
 				.tileWidth(1)
 				.tileHeight(1)
 				.translateToTile(pathElement.x,pathElement.y,0)
-				.occupyTile(pathElement.x,pathElement.y);
+				.occupyTile(pathElement.x,pathElement.y,1,1)
+				.setTileCoords(pathElement.x,pathElement.y);
 		}
 	},
 
@@ -46,7 +48,7 @@ var RoadNetwork = IgeEntity.extend({
 			}
 		};
 
-		EB.broadcast('NEW_ROAD');	
+		EB.broadcast('NEW_ROAD');
 	},
 
 	logRoutes : function()
@@ -220,16 +222,15 @@ var RoadNetwork = IgeEntity.extend({
 
 	hasContactWithRect : function(rect)
 	{
+		// console.log(rect);
 		for (var i = rect.x; i < rect.x + rect.width; i++) {
 
-			if(
-				this.isRoadAt(
-					{
-						'x':i,
-						'y:':rect.y - 1
-					}
-				)
-			) return this.roads[rect.y - 1][i];
+		// console.log("y: ",rect.y-1," x: ",i);
+			// debugger;
+			if(this.isRoadAt({'x':i,'y':rect.y - 1}))
+			{
+				return this.roads[rect.y - 1][i];	
+			} 
 			if(this.isRoadAt({'x':i,'y':rect.y + rect.height})) return this.roads[rect.y + rect.height][i];
 			
 		};
@@ -241,6 +242,48 @@ var RoadNetwork = IgeEntity.extend({
 		};
 
 		return false;
+	},
 
-	}
+	getPath : function(start,target)
+	{
+
+		// console.log(start,target);
+		// console.log(target);
+
+		var self = this;
+
+		return this.pathFinder.aStar(
+			ige.client.tileMap,
+			new IgePoint(start.x,start.y,0),
+			new IgePoint(target.x,target.y,0),
+			// new IgePoint(start.x * ige.client.tileMap.tileWidth(),start.y * ige.client.tileMap.tileHeight(),0),
+			// new IgePoint(target.x * ige.client.tileMap.tileWidth(),target.y * ige.client.tileMap.tileHeight(),0),
+			function(tile,tileX,tileY)
+			{
+				if(self.roads[tileY])
+					if(self.roads[tileY][tileX])
+					{
+						// console.log(self.roads[tileY][tileX]);
+						return true;
+					}
+				return false;
+			}
+			// function(tile)
+			// {
+
+			// 	console.log("here: "+tile);
+
+			// 	// return true;
+
+			// 	// if(tile==null) return false;
+				
+			// 	// console.log(tile.classId);
+
+			// 	// return tile.classId=="RoadPatch";
+			// }
+			// this.isRoadAt	
+		);
+	},
+
+	// checkTileRoadStuff
 });

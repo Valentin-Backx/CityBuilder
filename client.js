@@ -175,6 +175,13 @@ var Client = IgeClass.extend({
 						'backgroundColor'	: '#881100'
 					});
 
+					ige.ui.style('.activeTool',{
+						'backgroundColor'	: '#8811BB'
+					});
+
+					ige.ui.style('.inActiveTool',{
+						'backgroundColor'	: '#AA4411'		
+					});
 
 					//ROAD TOOL
 					ige.ui.style('.roadTool',{
@@ -215,13 +222,6 @@ var Client = IgeClass.extend({
 						.mount(uiScene);
 
 
-					self.tools = 
-					{
-						'roadTool' : new RoadTool(),
-						'placeBuildingTool' : new PlaceBuildingTool()
-					};
-
-					self.currentTool = self.tools.roadTool.activate(true);
 
 					self.roadToolUi = new IgeUiElement()
 										.id('roadToolUI')
@@ -274,6 +274,15 @@ var Client = IgeClass.extend({
 										.mount(self.topHud)
 										.depth(15);
 
+					self.tools = 
+					{
+						'roadTool' : new RoadTool(),
+						'placeBuildingTool' : new PlaceBuildingTool()
+					};
+
+					self.currentTool = self.tools.roadTool.activate(true);
+
+
 
 					self.toggleTool = function(newTool)
 					{
@@ -282,6 +291,8 @@ var Client = IgeClass.extend({
 							self.currentTool.activate(false);
 							self.currentTool = null;
 						}else{
+							if(self.currentTool)
+								self.currentTool.activate(false);
 							self.currentTool = newTool.activate(true);
 						}
 					}

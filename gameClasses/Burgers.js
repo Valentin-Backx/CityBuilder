@@ -3,13 +3,40 @@ var Burgers = Building.extend({
 	classId : 'Burgers',
 
 	buildingType : 'food',
-	
+
+	foodQuality : 0.2, // 0 to 1 
+	maxInfluenceRadius : 25,	
 	init : function()
 	{
 
 		Building.prototype.init.call(this);
 
+		this.toolUiElement = ige.client.burgerToolUI;
+
+		var self = this;
+
+		EB.subscribe('NEW_ROAD',function()
+		{
+			this.roadEntry = this.touchingRoad();
+
+			this.roadNetworkChanged = true;
+
+		},self);
+
 		this.sprite = ige.client.gameTextures.buildings.burgers;
+		EB.subscribe('NEW_STUDY_BUILDING',function()
+		{
+			this.closestStudy = this.getClosestStudy();
+		},self);
+		EB.subscribe('NEW_RESIDENTIAL_BUILDING',function()
+		{
+			this.closestResidence = this.getClosestResidential();
+		},self);
+		EB.subscribe('NEW_DRINKING_BUILDING',function()
+		{
+			this.closestDrinking = this.getClosestDrinking();
+		},self);
+
 
 	},	
 
@@ -43,7 +70,22 @@ var Burgers = Building.extend({
 
 	update : function()
 	{
+		if(this.roadNetworkChanged)
+		{
+
+			this.closestStudy = this.getClosestStudy();	
+			this.closestResidence = this.getClosestResidential();
+			this.closestDrinking = this.getClosestDrinking();
+			this.roadNetworkChanged = false;			
+		}
+
 		Building.prototype.update.call(this);
+	},
+
+	place : function()
+	{
+		Building.prototype.place.call(this);
+		EB.broadcast('NEW_FOOD_BUILDING',this);
 	}
 
 });

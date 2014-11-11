@@ -7,13 +7,45 @@ var ResidenceUniversitaire = Building.extend({
 	capacity : 100,
 	currentAttractivity : 1, //maximum
 
+	maxInfluenceRadius : 20,
+
 	init : function()
 	{
 		Building.prototype.init.call(this);
+		
+		this.toolUiElement = ige.client.residenceToolUI;
+
+		var self = this;
+
+		EB.subscribe('NEW_ROAD',function()
+		{
+
+			this.roadEntry = this.touchingRoad();
+
+			this.roadNetworkChanged = true;
+
+		},self);
+
+
 		this.sprite = ige.client.gameTextures.buildings.residence_1;
 
 		EB.subscribe('NEXT_DAY',this.newDayCallback,this);
+		
+		EB.subscribe('NEW_STUDY_BUILDING',function()
+		{
+			this.closestStudy = this.getClosestStudy();
+		},self);
+		
+		EB.subscribe('NEW_FOOD_BUILDING',function()
+		{
+			this.closestFood = this.getClosestFood();
+		},self);
+		EB.subscribe('NEW_DRINKING_BUILDING',function()
+		{
+			this.closestDrinking = this.getClosestDrinking();
+		},self);
 	},
+
 	size:
 	{
 		'w' : 2,
@@ -43,13 +75,23 @@ var ResidenceUniversitaire = Building.extend({
 			.mount(this)
 			.translateBy(2,-12,0);
 			
-		this.image.texture(this.sprite)
+		this.image.texture(this.sprite);
 		
 		return this;
 	},
 
 	update : function()
 	{
+		if(this.roadNetworkChanged)
+		{
+
+			this.closestStudy = this.getClosestStudy();	
+			this.closestFood = this.getClosestFood();
+			this.closestDrinking = this.getClosestDrinking();
+			
+			this.roadNetworkChanged = false;			
+		}
+
 		Building.prototype.update.call(this);
 	},
 
@@ -63,19 +105,25 @@ var ResidenceUniversitaire = Building.extend({
 	calculateAttractivity : function()
 	{
 		var foodSatisfaction = this.calculateFoodSatisfaction();
+
+		console.log(foodSatisfaction);
+
 		var drinkingSatisfaction = this.calculateDrinkingSatisf();
 		var studySatisfaction = this.calculateStudySatisf();
 
 	},
 
-	calculateDrinkingSatisf : function()
+	calculateDrinkingSatisf : function ()
 	{
 		
 	},
 
 	calculateFoodSatisfaction : function()
 	{
-
+		//1 roadblock away = 1, maxInfluenceRadius = 0.01
+		// add food quality for this building
+		if(!this.closestFood) return 0;
+		return distanceScore = (0.01 * this.closestFood.length) / this.closestFood.building.maxInfluenceRadius;
 	},
 
 	calculateStudySatisf : function()
@@ -94,5 +142,11 @@ var ResidenceUniversitaire = Building.extend({
 	immigrateStudents : function()
 	{
 		this.occupation++;
+	},
+
+	place : function()
+	{
+		Building.prototype.place.call(this);
+		EB.broadcast('NEW_RESIDENTIAL_BUILDING',this);
 	}
 });

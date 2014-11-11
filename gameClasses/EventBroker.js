@@ -8,8 +8,13 @@ var EventBroker = function()
 {
 	this.events = 
 	{
-		'NEXT_DAY' : [],
-		'NEW_ROAD' : []
+		'NEXT_DAY' 					: [],
+		'NEW_ROAD' 					: [],
+		'NEW_FOOD_BUILDING'			: [],
+		'NEW_DRINKING_BUILDING'		: [],
+		'NEW_STUDY_BUILDING'		: [],
+		'NEW_SENIOR_BUILDING'		: [],
+		'NEW_RESIDENTIAL_BUILDING'	: []
 	}
 }
 

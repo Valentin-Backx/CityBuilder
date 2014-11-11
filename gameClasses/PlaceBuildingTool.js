@@ -4,11 +4,12 @@ var PlaceBuildingTool = function()
 
 	this.buildingPLaceHolders = [];
 
+
+	this.currentBuildingToolUI = null;
 }
 
 PlaceBuildingTool.prototype.clicCall = function(tileX,tileY,event) {
 	if(!this.active) return;
-
 
 	if(this.isSpotValid(tileX,tileY))
 	{
@@ -31,7 +32,6 @@ PlaceBuildingTool.prototype.clicCall = function(tileX,tileY,event) {
 	ige.client.gameManager.newBuilding(this.currentBuilding);
 
 	this.currentBuilding = null;
-	
 	this.desactivate();
 };
 
@@ -56,32 +56,42 @@ PlaceBuildingTool.prototype.isSpotValid = function(x,y) {
 };
 
 PlaceBuildingTool.prototype.desactivate = function() {
-	
 	this.clearPlaceholders();
 
 	this.active = false;
 	
-	if(this.currentBuilding) this.currentBuilding.destroy(); //destroying building, if it was not placed
+	if(this.currentBuilding)
+	{
+		this.currentBuilding.destroy(); //destroying building, if it was not placed
+		
+	} 
+
+	this.currentBuildingToolUI.styleClass('inActiveTool');	
+
+	this.currentBuildingToolUI =null;
 
 	this.currentBuilding = null;
 
-	ige.client.burgerToolUI.applyStyle({'backgroundColor'	: '#AA4411'});
+	// ige.client.burgerToolUI.applyStyle({'backgroundColor'	: '#AA4411'});
 
 	ige.client.currentTool = null;
 };
 
-PlaceBuildingTool.prototype.activate = function(bool) {
-	this.active = bool;
+PlaceBuildingTool.prototype.activate = function(toggle) {
 
-	if(bool)
+	console.log(toggle);
+
+	this.active = toggle;
+	if(toggle)
 	{
-		ige.client.burgerToolUI.applyStyle({'backgroundColor'	: '#881100'});
-		
 		this.currentBuilding = this.getCurrentBuilding();
-
+		this.currentBuildingToolUI =  this.currentBuilding.toolUiElement.styleClass('activeTool');
 	}
 	else
-		this.desactivate();
+	{
+		this.desactivate();		
+	}
+
 
 	return this;
 };
@@ -115,18 +125,4 @@ PlaceBuildingTool.prototype.clearPlaceholders = function() {
 	for (var i = this.buildingPLaceHolders.length - 1; i >= 0; i--) {
 		this.buildingPLaceHolders[i].destroy();
 	};
-};
-
-PlaceBuildingTool.prototype.debugPlace = function(x,y) {
-	
-	this.currentBuilding = new Burgers();
-	this.currentBuilding
-			.mount(ige.client.tileMap)
-			.tileWidth(this.currentBuilding.size.w)
-			.tileHeight(this.currentBuilding.size.h)
-			.translateBy(this.currentBuilding.size.offsetX,this.currentBuilding.size.offsetY,0)
-			.occupyTile()
-			.translateToTile(x,y,0)
-			.translateBy(this.currentBuilding.size.offsetX,this.currentBuilding.size.offsetY,0)
-			.draw()
 };

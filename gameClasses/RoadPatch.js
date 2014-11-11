@@ -1,9 +1,9 @@
 var RoadPatch = IgeEntity.extend({
 	classId : 'RoadPatch',
 
-	init : function(myTexture)
+	init : function()
 	{
-		this.texture = myTexture;
+		// this.texture = myTexture;
 
 		IgeEntity.prototype.init.call(this);
 
@@ -17,8 +17,10 @@ var RoadPatch = IgeEntity.extend({
 		this
 
 			.isometric(true)
-			.size3d(ige.client.tileMap._tileWidth,ige.client.tileMap._tileHeight,20)
+			.isometricMounts(true)
 			.drawBounds(true)
+			.size3d(ige.client.tileMap._tileWidth,ige.client.tileMap._tileHeight,20);
+
 	}
 
 });
@@ -44,6 +46,10 @@ RoadPatch.prototype.applyTexture = function(texture) {
 			.mount(this);
 
 	// console.log(this.texture);
+};
 
-
+RoadPatch.prototype.setTileCoords = function(x,y) {
+	this.x = x;
+	this.y = y;
+	return this;
 };
