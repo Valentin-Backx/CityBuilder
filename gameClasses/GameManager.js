@@ -7,6 +7,8 @@ var GameManager = IgeEntity.extend({
 	init : function()
 	{
 		IgeEntity.prototype.init.call(this);
+
+		EB.subscribe('BUILDING_DESTROYED',this.onBuildingDestroyed,this);
 	},
 
 	budget : 100000,
@@ -30,8 +32,14 @@ var GameManager = IgeEntity.extend({
 
 	advanceTime : function()
 	{
-
-		var day = this.days[Math.floor(((new Date() - this.startTime) / 180000) % 7)];
+		var day;
+		if(!ige.client.DEBUG)
+		{
+			day = this.days[Math.floor(((new Date() - this.startTime) / 180000) % 7)];			
+		}else
+		{
+			day = this.days[Math.floor(((new Date() - this.startTime) / 1000) % 7)];
+		}
 
 		if(day != this.currentDay)
 		{
@@ -59,5 +67,44 @@ var GameManager = IgeEntity.extend({
 			// console.log("nope");
 			this.others.push(building);
 		}
+	},
+
+	onBuildingDestroyed : function(building)
+	{
+		for (var i = this.residentialBuildings.length - 1; i >= 0; i--) {
+			if(this.residentialBuildings[i] == building)
+			{
+				this.residentialBuildings.splice(i,1);
+				EB.broadcast('NEW_RESIDENTIAL_BUILDING');
+				return;
+			}
+		};
+
+		for (var i = this.foodBuildings.length - 1; i >= 0; i--) {
+			if(this.foodBuildings[i]==building)
+			{
+				this.foodBuildings.splice(i,1);
+				EB.broadcast('NEW_FOOD_BUILDING');
+				return;
+			}
+		};
+
+		for (var i = this.schoolBuildings.length - 1; i >= 0; i--) {
+			if(this.schoolBuildings[i]==building)
+			{
+				this.schoolBuildings.splice(i,1);
+				EB.broadcast('NEW_STUDY_BUILDING');
+				return;
+			}
+		};
+
+		for (var i = this.drinkingBuildings.length - 1; i >= 0; i--) {
+			if(this.drinkingBuildings[i]==building)
+			{
+				this.drinkingBuildings.splice(i, 1);
+				EB.broadcast('NEW_DRINKING_BUILDING');
+				return;
+			}
+		};
 	}
 });

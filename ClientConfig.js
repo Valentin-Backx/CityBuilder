@@ -21,7 +21,10 @@ var igeClientConfig = {
 		'./gameClasses/Tools.js',
 		'./gameClasses/CheckOccupation.js',
 		'./gameClasses/GameManager.js',
-		'./gameClasses/ResidenceUniversitaire.js'
+		'./gameClasses/ResidenceUniversitaire.js',
+		'./gameClasses/Utils.js',
+		'./gameClasses/MigrationEffect.js',
+		'./gameClasses/BulldozerTool.js'
 	]
 };
 

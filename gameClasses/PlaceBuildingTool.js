@@ -79,8 +79,6 @@ PlaceBuildingTool.prototype.desactivate = function() {
 
 PlaceBuildingTool.prototype.activate = function(toggle) {
 
-	console.log(toggle);
-
 	this.active = toggle;
 	if(toggle)
 	{

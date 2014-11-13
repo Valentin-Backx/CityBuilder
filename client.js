@@ -1,5 +1,10 @@
+
+
 var Client = IgeClass.extend({
 	classId: 'Client',
+
+	DEBUG :true,
+
 	init: function () {
 		ige.showStats(1);
 
@@ -58,6 +63,14 @@ var Client = IgeClass.extend({
 			'residence_1' : new IgeTexture('./assets/buildings/residence_universitaire1.png')
 		}
 
+		this.gameTextures.tools = 
+		{
+			'bulldozer' : new IgeTexture('./assets/bulldozer.png')
+		}
+
+		this.gameTextures.positiveMigration = new IgeTexture('./assets/pos_migration.png');
+		this.gameTextures.negativeMigration = new IgeTexture('./assets/neg_migration.png');
+
 		// Load a game texture here
 		//this.gameTextures.myTexture = new IgeTexture('./assets/somePathToImage.png');
 		
@@ -83,8 +96,6 @@ var Client = IgeClass.extend({
 				if (success) {
 					// Add base scene data
 					ige.addGraph('IgeBaseScene');
-					// ige.viewportDepth(true);
-					// ige.$('vp1').depth(0);
 
 					// CREATE SOME ENTITIES AND WHOTNOT HERE
 					var baseScene = ige.$('baseScene');
@@ -202,7 +213,9 @@ var Client = IgeClass.extend({
 						'left'				: 245
 					});
 
-					ige.ui.style('')
+					ige.ui.style('#bulldozerToolUI',{
+						'right'				: 15
+					});
 
 
 					var uiScene = new IgeScene2d()
@@ -264,6 +277,18 @@ var Client = IgeClass.extend({
 											self.toggleTool(self.tools.placeBuildingTool);
 										});
 
+					self.bulldozerToolUI = new IgeUiElement()
+										.id('bulldozerToolUI')
+										.styleClass('tool')
+										.mount(self.toolsSelectionUI)
+										.backgroundPattern(self.gameTextures.tools.bulldozer,'no-repeat',false,false)
+										.mouseUp(function(event,control)
+										{
+											control.stopPropagation();
+											ige.input.stopPropagation();
+											self.toggleTool(self.tools.bulldozerTool);											
+										}),
+
 					self.topHud = new IgeUiElement()
 										.id('topHud')
 										.mount(uiScene);
@@ -276,12 +301,12 @@ var Client = IgeClass.extend({
 
 					self.tools = 
 					{
-						'roadTool' : new RoadTool(),
-						'placeBuildingTool' : new PlaceBuildingTool()
+						'roadTool' 				: new RoadTool(),
+						'placeBuildingTool' 	: new PlaceBuildingTool(),
+						'bulldozerTool' 		: new BulldozerTool()
 					};
 
 					self.currentTool = self.tools.roadTool.activate(true);
-
 
 
 					self.toggleTool = function(newTool)

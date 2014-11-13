@@ -4,8 +4,7 @@ var Burgers = Building.extend({
 
 	buildingType : 'food',
 
-	foodQuality : 0.2, // 0 to 1 
-	maxInfluenceRadius : 25,	
+	foodQuality : 0.2, // 0 to 1 	
 	init : function()
 	{
 
@@ -26,15 +25,15 @@ var Burgers = Building.extend({
 		this.sprite = ige.client.gameTextures.buildings.burgers;
 		EB.subscribe('NEW_STUDY_BUILDING',function()
 		{
-			this.closestStudy = this.getClosestStudy();
+			this.pointsOfInterestChanged = true;
 		},self);
 		EB.subscribe('NEW_RESIDENTIAL_BUILDING',function()
 		{
-			this.closestResidence = this.getClosestResidential();
+			this.pointsOfInterestChanged = true;
 		},self);
 		EB.subscribe('NEW_DRINKING_BUILDING',function()
 		{
-			this.closestDrinking = this.getClosestDrinking();
+			this.pointsOfInterestChanged = true;
 		},self);
 
 
@@ -72,14 +71,23 @@ var Burgers = Building.extend({
 	{
 		if(this.roadNetworkChanged)
 		{
+			this.seekPoIs();
 
-			this.closestStudy = this.getClosestStudy();	
-			this.closestResidence = this.getClosestResidential();
-			this.closestDrinking = this.getClosestDrinking();
 			this.roadNetworkChanged = false;			
+		}else if(this.pointsOfInterestChanged)
+		{
+			this.seekPoIs();
+			this.pointsOfInterestChanged = false;
 		}
 
 		Building.prototype.update.call(this);
+	},
+
+	seekPoIs : function()
+	{
+		this.closestStudy = this.getClosestStudy();	
+		this.closestResidence = this.getClosestResidential();
+		this.closestDrinking = this.getClosestDrinking();
 	},
 
 	place : function()

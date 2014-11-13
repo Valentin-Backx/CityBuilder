@@ -14,7 +14,8 @@ var EventBroker = function()
 		'NEW_DRINKING_BUILDING'		: [],
 		'NEW_STUDY_BUILDING'		: [],
 		'NEW_SENIOR_BUILDING'		: [],
-		'NEW_RESIDENTIAL_BUILDING'	: []
+		'NEW_RESIDENTIAL_BUILDING'	: [],
+		'BUILDING_DESTROYED'		: []
 	}
 }
 

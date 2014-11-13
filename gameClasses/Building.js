@@ -1,17 +1,30 @@
 var Building = IgeEntity.extend({
 
 	classId : 'Building',
+
+	maxDeplacement : 20,
+	
+	pointsOfInterestChanged : false,
+
 	init : function()
 	{
 
 		IgeEntity.prototype.init.call(this);
 
+		var self = this;
 		this
 			.isometric(true)
 			.isometricMounts(true)
 			.drawBounds(true)
-			.size3d(ige.client.tileMap._tileWidth * this.size.w,ige.client.tileMap._tileHeight * this.size.h,20);
+			.size3d(ige.client.tileMap._tileWidth * this.size.w,ige.client.tileMap._tileHeight * this.size.h,20)
 
+			.mouseUp(function(event,control){
+				console.log("runrurnurnu");
+				if(typeof(ige.client.currentTool)==typeof(BulldozerTool))
+				{
+					self.destroy();
+				}
+			});
 
 	},
 	
@@ -63,6 +76,7 @@ var Building = IgeEntity.extend({
 	{
 		var debug = this.classId() == 'ResidenceUniversitaire';
 
+		// if(debug) debugger;
 		if(buildingsArray.length == 0 || !this.roadEntry) return null;
 
 
@@ -76,6 +90,7 @@ var Building = IgeEntity.extend({
 
 			var currentRoadEntry = buildingsArray[i].roadEntry;
 
+			// if(debug) console.log(currentRoadEntry)
 			if(closest)//il y a déjà un closest path
 			{
 				if(currentRoadEntry)//si le batiment actuel a une entry....
@@ -118,5 +133,11 @@ var Building = IgeEntity.extend({
 	getClosestFood : function()
 	{
 		return this.getClosestBuilding(ige.client.gameManager.foodBuildings);
+	},
+
+	destroy : function()
+	{
+		EB.broadcast('BUILDING_DESTROYED',this);
+		IgeEntity.prototype.destroy.call(this);
 	}
 });
