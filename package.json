@@ -1,0 +1,21 @@
+{
+  "name": "citybuilder",
+  "version": "1.0.0",
+  "description": "city building game",
+  "main": "index.js",
+  "scripts": {
+    "test": "run"
+  },
+  "keywords": [
+    "citybuilder",
+    "game",
+    "simulation",
+    "management"
+  ],
+  "author": "Valentin Backx",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.3",
+    "jade": "^1.11.0"
+  }
+}

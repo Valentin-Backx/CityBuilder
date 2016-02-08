@@ -1,18 +1,22 @@
-var Game = IgeClass.extend({
-	classId: 'Game',
+var express = require('express');
+var app = express();
 
-	init: function (App, options) {
-		// Create the engine
-		ige = new IgeEngine();
+app.set('port', (process.env.PORT || 5000));
+app.use(express.static(__dirname + '/public'));
 
-		if (!ige.isServer) {
-			ige.client = new App();
-		}
+    
+app.set('views', __dirname + '/views');
+// app.set('ige', __dirname + '/ige');
 
-		if (ige.isServer) {
-			ige.server = new App(options);
-		}
-	}
+app.use('/ige',  express.static(__dirname + '/ige'));
+
+// app.use(express.static(__dirname + '/ige'));
+
+app.listen(app.get('port'), function() {
+  console.log('Node app is running on port', app.get('port'));
 });
 
-if (typeof(module) !== 'undefined' && typeof(module.exports) !== 'undefined') { module.exports = Game; } else { var game = new Game(Client); }
+
+var route = require('./routes.js').addRoutes(app);
+
+
